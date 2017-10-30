@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <windows.h>
+#include <signal.h>
+//#include <windows.h>
 
 //authors: Alexander Barnhart, Dave Kelly
 //uthash is an open source C hash library. http://troydhanson.github.io/uthash
@@ -68,7 +69,17 @@ void hash_it(char *process, int memory_usage)
 		//If it is, check the stored memory usage
 		//If the new memory usage is 3/2x bigger, kill the process
 		printf("%s determined to be potential rabbit.\nThe old memory usage was: %d\nThe new usage is: %d\nKilling...\n", process, current_program->memory_usage, memory_usage);
-		kill(atoi(process), SIGKILL);
+		char *command = "taskkill /IM  /F";
+		char kill_command[50];
+		int insert = 13;
+		strncpy(kill_command, command, insert);
+		kill_command[insert] = '\0';
+		strcat(kill_command, process);
+		strcat(kill_command, command + 13);
+		printf("\n----------------------------\n");
+		printf(kill_command);
+		printf("\n----------------------------\n");
+		system(kill_command);
 		printf("%s killed.\n", process);
 		//And remove the process from the hash table
 		printf("Removing %s from hash table...\n", process);
@@ -129,7 +140,7 @@ void parse_token(char *string)
 
 int main()
 {
-	while (1)
+	while(1)
 	{
 		//method for taking _popen and placing it into string was borrowed from:
 		//https://stackoverflow.com/questions/26932616/read-input-from-popen-into-char-in-c
